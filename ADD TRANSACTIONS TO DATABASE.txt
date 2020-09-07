@@ -1,0 +1,40 @@
+package credittransfer;
+
+import java.io.*;  
+import java.sql.*;
+import javax.servlet.*;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;  
+import javax.servlet.http.*;
+
+
+  
+public class ct2 extends HttpServlet {  
+public void doPost(HttpServletRequest request, HttpServletResponse response)  
+            throws ServletException, IOException {  
+     
+response.setContentType("text/html");  
+PrintWriter out = response.getWriter();  
+
+
+String a=(String)request.getAttribute("from");
+String b=(String)request.getAttribute("to");
+Integer c=(Integer)request.getAttribute("credit");
+try {
+    Class.forName("oracle.jdbc.driver.OracleDriver");
+    Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+    PreparedStatement ps=con.prepareStatement("insert into transactionhistory values(?,?,?)");
+    ps.setString(1, a);
+    ps.setString(2, b);
+    ps.setInt(3,c);
+int z=ps.executeUpdate();
+if(z>0) {
+	
+	response.sendRedirect("VIEW USERS");
+}
+}catch(Exception e) {
+System.out.println(e);	
+}
+   
+}}
+     

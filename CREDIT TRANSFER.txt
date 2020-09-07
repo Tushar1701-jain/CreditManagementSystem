@@ -1,0 +1,82 @@
+package credittransfer;
+
+import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.*;
+import java.util.*;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class credittransfer extends HttpServlet {
+
+	public void doPost(HttpServletRequest request, HttpServletResponse response)  
+            throws ServletException, IOException  { 
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		Integer i=0,i2=0;
+  String n=request.getParameter("from");
+ String p=request.getParameter("to");;
+ Integer e=Integer.parseInt(request.getParameter("credit"));
+  
+try {
+	Class.forName("oracle.jdbc.driver.OracleDriver");
+	 Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+	    PreparedStatement ps=con.prepareStatement("select credit from credittransfer where name=?");
+	    ps.setString(1, n);
+	    
+	    ResultSet rs=ps.executeQuery();
+	    while(rs.next()) {
+		
+	    i=rs.getInt(1);
+	   
+	    }
+	   
+	  
+	    if(i>=e && e>=0) {
+	    
+	    	i=i-e;
+	    	 PreparedStatement ps1=con.prepareStatement("update credittransfer set credit=? where name=?");
+	    	 ps1.setInt(1, i);
+	    	 ps1.setString(2, n);
+	    	 ps1.executeUpdate();
+	    	 PreparedStatement ps2=con.prepareStatement("select credit from credittransfer where name=?");
+	    	 ps2.setString(1, p);
+	    	 ResultSet rs2=ps2.executeQuery();
+	    	 while(rs2.next()) {
+	 	     i2=rs2.getInt(1);
+	    	 }
+	 	    i2=i2+e;
+	 	   PreparedStatement ps3=con.prepareStatement("update credittransfer set credit=? where name=?");
+	    	 ps3.setInt(1, i2);
+	    	 ps3.setString(2, p);
+	    	Integer i4= ps3.executeUpdate();
+	    	if(i4>0) {
+	    		
+	    		
+	    		request.setAttribute("from", n);
+	    		request.setAttribute("to", p);
+	    		request.setAttribute("credit", e);
+	    		RequestDispatcher rd=request.getRequestDispatcher("ct2");
+	    		rd.forward(request,response);
+	    		
+	    	}}
+	    else {
+	    	out.println("sorry Credit cannot be transfer because of low credit amount  in account or invalid amount");
+	    	RequestDispatcher rd=request.getRequestDispatcher("credittransfer.html");
+			rd.include(request, response);
+	    	
+	    }
+}catch(Exception e2)
+{System.out.println(e2);}
+
+ 
+} 
+}

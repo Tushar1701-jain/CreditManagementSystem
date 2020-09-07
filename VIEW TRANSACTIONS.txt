@@ -1,0 +1,87 @@
+package credittransfer;
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.sql.*;
+
+
+public class transactionfetch extends HttpServlet {
+	public void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException,IOException{
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			 Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+			    PreparedStatement ps=con.prepareStatement("select * from transactionhistory");
+			ResultSet rs=ps.executeQuery();
+			out.println("<!DOCTYPE html>\r\n" + 
+					"<html lang=\"en\">\r\n" + 
+					"<head>\r\n" + 
+					"  <title>Bootstrap Example</title>\r\n" + 
+					"  <meta charset=\"utf-8\">\r\n" + 
+					"  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n" + 
+					"  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css\">\r\n" + 
+					"  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>\r\n" + 
+					"  <script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js\"></script>\r\n" + 
+					"  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js\"></script>\r\n" + 
+					"</head>\r\n" + 
+					"<body>\r\n" + 
+					"\r\n" + 
+					"<div class=\"container\">\r\n" + 
+					
+					"  <table class=\"table table-dark\">\r\n" + 
+					"    <thead>\r\n" + 
+					"      <tr>\r\n" + 
+					"        <th>FROM</th>\r\n" + 
+					"        <th>TO</th>\r\n" + 
+					"        <th>CREDIT TRANSFER</th>\r\n" + 
+					"      </tr>\r\n" + 
+					"    </thead>\r\n" + 
+					"   \r\n" + 
+					"  </table>\r\n" + 
+					"</div>\r\n" + 
+					"\r\n" + 
+					"</body>\r\n" + 
+					"</html>\r\n" + 
+					"");
+			while(rs.next()) {
+				
+				
+				out.println("<!DOCTYPE html>\r\n" + 
+						"<html lang=\"en\">\r\n" + 
+						"<head>\r\n" + 
+						"  <title>Bootstrap Example</title>\r\n" + 
+						"  <meta charset=\"utf-8\">\r\n" + 
+						"  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n" + 
+						"  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css\">\r\n" + 
+						"  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>\r\n" + 
+						"  <script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js\"></script>\r\n" + 
+						"  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js\"></script>\r\n" + 
+						"</head>\r\n" + 
+						"<body>\r\n" + 
+						"\r\n" + 
+						"<div class=\"container\">\r\n" + 
+						
+						"  <table class=\"table table-dark table-striped\">\r\n" + 
+						
+						"    <tbody>\r\n" + 
+						"      <tr>\r\n" + 
+						"        <td>"+rs.getString(1)+"</td>\r\n" + 
+						"        <td>"+rs.getString(2)+"</td>\r\n" + 
+						"        <td>"+rs.getInt(3)+"</td>\r\n" + 
+						"      </tr>\r\n" + 
+						    
+						"    </tbody>\r\n" + 
+						"  </table>\r\n" + 
+						"</div>\r\n" + 
+						"\r\n" + 
+						"</body>\r\n" + 
+						"</html>");
+			}
+		}catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+
+}
